@@ -1,11 +1,11 @@
 import { NextRequest } from "next/server"
 import OpenAI from "openai"
-import { MessageContentText } from "openai/resources/beta/threads/index.mjs"
+import { MessageContent } from "openai/resources/beta/threads";
 
 const assistantId = "asst_QUh3V3TzbQB1bxf9b11Xnp4U"
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
-})
+});
 
 async function waitForResult(threadId: string, runId: string):Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -18,20 +18,16 @@ async function waitForResult(threadId: string, runId: string):Promise<void> {
                     console.log(currentRun.status)
                     setTimeout(verifyStatus, 1000)
                 }
-
             } catch(e) {
                 reject(e)
             }
         }
-
         verifyStatus()
-
     })
 }
 
 
 export async function GET(request: NextRequest) {
-
     const params = request.nextUrl.searchParams
     const textToSearch = params.get("search")
     let result: string = "";
@@ -53,10 +49,10 @@ export async function GET(request: NextRequest) {
 
         await waitForResult(thread.id, run.id)
 
-        const messages = await openai.beta.threads.messages.list(thread.id)
+        const messages = await openai.beta.threads.messages.list(thread.id);
         messages.data.forEach(m => {
             if (m.role === "assistant") {
-                const content: MessageContentText[] = m.content as MessageContentText[]
+                const content: MessageContent[] = m.content as MessageContent[];
                 result = content[0].text.value
             }
         })
