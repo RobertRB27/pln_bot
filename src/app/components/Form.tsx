@@ -10,7 +10,7 @@ const Form = () => {
 
   const getData = async () => {
     const data = await fetch(
-      `http://localhost:3000/api?search=${topic.replace(" ","+")}+en+tono+${tono}`
+      `${process.env.API_NEXT}/api?search=${topic.replace(" ","+")}+en+tono+${tono}`
     )
     return data.json()
   }
