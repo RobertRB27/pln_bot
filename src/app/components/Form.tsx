@@ -10,7 +10,7 @@ const Form = () => {
 
   const getData = async () => {
     const data = await fetch(
-      `${process.env.API_NEXT}/api?search=${topic.replace(" ","+")}+en+tono+${tono}`
+      `${process.env.NEXT_PUBLIC_API_NEXT}/api?search=${topic.replace(" ","+")}+en+tono+${tono}`
     )
     return data.json()
   }
@@ -24,13 +24,16 @@ const Form = () => {
       e.preventDefault()
       getData().then(r  => {
         setResult(r.data)
-        setLoading(false)
         setTopic('')
         setTono('')
+      }).catch(e => {
+        alert("Hubo un error al generar la historia")
+      }).finally(() => {
+        setLoading(false)
       })
     }
   }
- 
+  
   return (
       <>
         <div className="form-section container flex justify-center">
